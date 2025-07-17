@@ -18,7 +18,7 @@ console.log(PORT)
 const __dirname = path.resolve();
 
 app.use(express.json());
-app.use(cookieParser());
+//app.use(cookieParser());
 app.use(cors());
 
 app.use("/api/auth", authRoutes);
