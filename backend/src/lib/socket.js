@@ -7,7 +7,8 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: ["*"],
+    origin: "*",          // ✅ Allow any origin (use "*" without square brackets)
+    methods: ["GET", "POST"], // ✅ Optional: allowed methods
   },
 });
 
