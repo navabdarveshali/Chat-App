@@ -19,7 +19,7 @@ const __dirname = path.resolve();
 
 app.use(express.json());
 app.use(cookieParser());
-const allowedOrigins = ["http://localhost:5173", "https://chatapp.navabdarveshali.xyz"];
+const allowedOrigins = ["*"];
 
 app.use(
   cors({
