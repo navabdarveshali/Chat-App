@@ -39,6 +39,6 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd ${{ secrets.EC2_TARGET_DIR/backend }}
+            cd ${{ secrets.EC2_TARGET_DIR }}
             npm install
             pm2 restart all || pm2 start index.js
