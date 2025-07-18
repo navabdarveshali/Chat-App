@@ -41,5 +41,7 @@ jobs:
           script: |
             cd ${{ secrets.EC2_TARGET_DIR }}
             cd backend
+            touch .env
+            echo "${{ secrets.PROD_BACKEND_ENV }}" > .env
             npm install
             pm2 restart all || pm2 start index.js
