@@ -29,7 +29,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "/chat-app"
+          source: "/home/ubuntu/chat-app"
           target: ${{ secrets.EC2_TARGET_DIR }}
 
       - name: SSH into EC2 and deploy
