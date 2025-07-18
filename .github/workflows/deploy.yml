@@ -29,7 +29,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "app.tar.gz"
+          source: "."
           target: ${{ secrets.EC2_TARGET_DIR }}
 
       - name: SSH into EC2 and deploy
@@ -40,6 +40,5 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd ${{ secrets.EC2_TARGET_DIR }}
-            tar -xzf app.tar.gz
             npm install
-            pm2 restart all || pm2 start index.js --name "backend-app"
+            pm2 restart all || pm2 start index.js
