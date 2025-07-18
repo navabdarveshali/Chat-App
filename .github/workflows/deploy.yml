@@ -1,4 +1,4 @@
-name: Deploy Realtime-chat app
+name: chat-app
 
 on:
   push:
@@ -7,40 +7,39 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted
-
-    strategy:
-      matrix:
-        node-version: [22.x]
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-          cache-dependency-path: |
-            backend/package-lock.json
-  
+          node-version: '23.5.0' 
 
-      # ------------------------------
-      # BACKEND SETUP
-      # ------------------------------
-      - name: Install backend dependencies
-        working-directory: ./backend
-        run: npm install
-
-      - name: Create backend .env file
-        working-directory: ./backend
+      - name: Install dependencies
         run: |
-          touch .env
-          echo "${{ secrets.PROD_BACKEND_ENV }}" > .env
+          cd backend
+          npm install
 
-      - name: Start backend with PM2
-        working-directory: ./backend
-        run: |
-          pm2 start index.js || pm2 restart index.js
+      - name: Copy files to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "app.tar.gz"
+          target: ${{ secrets.EC2_TARGET_DIR }}
 
+      - name: SSH into EC2 and deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ${{ secrets.EC2_TARGET_DIR }}
+            tar -xzf app.tar.gz
+            npm install
+            pm2 restart all || pm2 start index.js --name "backend-app"
